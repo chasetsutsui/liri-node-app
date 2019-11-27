@@ -21,9 +21,32 @@ var getMovie = function (movieName) {
 
         }
     );
-
 }
 
+var getConcert = function (bandName) {
+    axios.get("https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=codingbootcamp").then(
+        function (response) {
+            console.log("\nVenue Name: " + response.data[0].venue.name + "\n");
+            console.log("City: " + response.data[0].venue.city + "\n");
+            console.log("Date: " + moment(response.data[0].datetime).format("MM-DD-YYYY") + "\n");
+            console.log("*****************************");
+        }
+    )
+}
+
+var userOptions = function (caseData, functionData) {
+    switch (caseData) {
+        case "movie-this":
+            getMovie(functionData);
+            break;
+        case "concert-this":
+            getConcert(functionData);
+            break;
+        default:
+            console.log('\nPlease enter a valid LIRI command \nOptions are:\n1: spotify-this-song\n2: movie-this\n3: concert-this');
+
+    }
+}
 
 
 var userInput = function (argOne, argTwo) {
