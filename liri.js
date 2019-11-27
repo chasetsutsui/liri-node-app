@@ -5,6 +5,7 @@ var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 var axios = require("axios");
 var moment = require("moment");
+var fs = require("fs");
 
 var getMovie = function (movieName) {
 
@@ -33,6 +34,37 @@ var getConcert = function (bandName) {
         }
     )
 }
+var getArtist = function (artist) {
+    return artist.name;
+}
+
+var getSpotify = function (songName) {
+    spotify.search({ type: 'track', query: songName }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+
+        var songs = data.tracks.items;
+        for (var i = 0; i < songs.length; i++) {
+            console.log(i);
+            console.log("\nartist: " + songs[i].artists.map(getArtist) + "\n");
+            console.log("song: " + songs[i].name + "\n");
+            console.log("preview song: " + songs[i].preview_url + "\n");
+            console.log("album: " + songs[i].album.name + "\n");
+            console.log("*****************************");
+
+        }
+    });
+}
+var doWhatItSays = function () {
+    fs.readFile("random.txt", "utf8", function (err, data) {
+        if (err) throw err;
+        var dataArr = data.split(",");
+
+        userOptions(dataArr[0], dataArr[1]);
+
+    });
+}
 
 var userOptions = function (caseData, functionData) {
     switch (caseData) {
@@ -42,12 +74,17 @@ var userOptions = function (caseData, functionData) {
         case "concert-this":
             getConcert(functionData);
             break;
+        case "spotify-this-song":
+            getSpotify(functionData);
+            break;
+        case "do-what-it-says":
+            doWhatItSays();
+            break
         default:
-            console.log('\nPlease enter a valid LIRI command \nOptions are:\n1: spotify-this-song\n2: movie-this\n3: concert-this');
+            console.log('\nPlease enter a valid LIRI command \nOptions are:\n1: spotify-this-song\n2: movie-this\n3: concert-this\n4: do-what-it-says');
 
     }
 }
-
 
 var userInput = function (argOne, argTwo) {
     userOptions(argOne, argTwo);
